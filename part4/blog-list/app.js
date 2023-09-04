@@ -1,10 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+require('express-async-errors')
 const mongoose = require('mongoose')
 const logger = require('./utils/logger')
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const app = express()
+const blogsRouter = require('./controllers/blogs')
 
 
 
@@ -17,7 +19,6 @@ mongoose.connect(mongoUrl).then(()=>{
 ).catch(error=>{
   logger.error('error connecting to mongoDB',error.message)
 })
-const blogsRouter = require('./controllers/blogs')
 
 
 app.use(cors())

@@ -78,8 +78,6 @@ const mostLikes = (blogs) =>{
     return mostLikeAuthor
 }
 
-let a = [{author : 'a'},{author : 'a'},{author : 'a'},{author : 'b'}]
-console.log(_.groupBy(a,a.author))
 
 module.exports = {
     dummy,
