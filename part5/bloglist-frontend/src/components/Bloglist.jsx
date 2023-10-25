@@ -14,12 +14,13 @@ const BlogList = ({ blogs }) => {
     if (isDelete) {
       try {
         await BlogService.deleteBlog(blog.id);
+        let newBlogList = bloglist.filter((currBlog) => blog.id !== currBlog.id);
+        setBlogList(newBlogList);
       } catch (e) {
         console.log(e);
       }
     }
-    let newBlogList = bloglist.filter((currBlog) => blog.id !== currBlog.id);
-    setBlogList(newBlogList);
+   
   };
 
   return (
