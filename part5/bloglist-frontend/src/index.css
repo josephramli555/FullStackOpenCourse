@@ -1,0 +1,20 @@
+
+.success{
+  color : black;
+  font-family: sans-serif;
+  background-color: azure;
+  font-size: 30px;
+  border:5px dashed greenyellow;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.error{
+  color : black;
+  font-family: sans-serif;
+  background-color: bisque;
+  font-size: 30px;
+  border:5px solid red;
+  padding: 15px;
+  margin-bottom: 10px;
+}
