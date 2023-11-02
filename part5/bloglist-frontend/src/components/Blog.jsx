@@ -1,58 +1,45 @@
-import ListGroup from "react-bootstrap/ListGroup";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import { useState } from "react";
-import BlogService from "../services/blogs";
+import ListGroup from 'react-bootstrap/ListGroup'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import { useState } from 'react'
 
 const Blog = (props) => {
-  let { url, likes, author, title, id, user } = props.data;
-  let { canBeDeleted, handleDelete } = props;
-  const [visible, setVisible] = useState(false);
-  const [totalLikes, setTotalLikes] = useState(likes);
+  let { url, likes, author, title, id, user } = props.data
+  let { canBeDeleted, handleDelete, handleLike } = props
+  const [visible, setVisible] = useState(false)
 
-  const showWhenVisible = { display: visible ? "" : "none" };
-  const showButtonTitle = visible ? "Hide" : "View";
+  const showWhenVisible = { display: visible ? '' : 'none' }
+  const showButtonTitle = visible ? 'Hide' : 'View'
 
-  const showButtonDelete = { display: canBeDeleted ? "" : "none" };
+  const showButtonDelete = { display: canBeDeleted ? '' : 'none' }
   const toggleVisibility = () => {
-    setVisible(!visible);
-  };
-
-  const updateLike = async () => {
-    let updatedBlog = {
-      url,
-      author,
-      title,
-      id,
-      likes: likes + 1,
-      user: user.id,
-    };
-    let result = await BlogService.update(updatedBlog);
-    setTotalLikes(result.likes);
-  };
-
-
+    setVisible(!visible)
+  }
 
   return (
     <Col xs={12} md={6} xl={4} className="mb-3">
-      <Card style={{ width: "18rem" }} key={id}>
+      <Card style={{ width: '18rem' }} key={id}>
         <Card.Body>
-          <Card.Title>{title}</Card.Title>
+          <Card.Title>
+            {title} by {author}
+          </Card.Title>
           <Button variant="success" onClick={toggleVisibility}>
             {showButtonTitle}
           </Button>
         </Card.Body>
-        <ListGroup className="list-group-flush" style={showWhenVisible}>
-          <ListGroup.Item>url : {url}</ListGroup.Item>
-          <ListGroup.Item>Likes : {totalLikes} </ListGroup.Item>
-          <ListGroup.Item>Author : {author}</ListGroup.Item>
+        <ListGroup
+          className="list-group-flush blog-details"
+          style={showWhenVisible}
+        >
+          <ListGroup.Item>Url : {url}</ListGroup.Item>
+          <ListGroup.Item>Likes : {likes} </ListGroup.Item>
           <ListGroup.Item>User : {user.name}</ListGroup.Item>
           <ListGroup.Item>
             <Button
               variant="success"
-              onClick={() => {
-                updateLike();
+              onClick={async () => {
+                await handleLike()
               }}
             >
               Like
@@ -68,7 +55,7 @@ const Blog = (props) => {
         </ListGroup>
       </Card>
     </Col>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

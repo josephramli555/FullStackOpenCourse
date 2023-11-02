@@ -22,14 +22,17 @@ const getAll = () => {
 }
 
 const update = (blog) => {
-  const updateUrl = baseUrl + "/" + blog.id
+  const updateUrl = baseUrl + '/' + blog.id
   const request = axios.put(updateUrl, blog)
   return request.then(response => response.data)
 }
 
 const deleteBlog = (blogID) => {
   const deleteURL = `${baseUrl}/${blogID}`
-  const request = axios.delete(deleteURL)
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.delete(deleteURL,config)
   return request.then(response => response.data)
 }
 

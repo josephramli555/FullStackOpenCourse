@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const CreateBlogForm = ({ createBlog }) => {
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
 
   const addBlog = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     let newBlog = {
       title: blogTitle,
       author: blogAuthor,
       url: blogUrl,
-    };
+    }
     await createBlog(newBlog)
-    setBlogTitle("")
-    setBlogUrl("")
-    setBlogAuthor("")
-  };
+    setBlogTitle('')
+    setBlogUrl('')
+    setBlogAuthor('')
+  }
 
   return (
     <>
@@ -28,8 +28,9 @@ const CreateBlogForm = ({ createBlog }) => {
             type="text"
             value={blogTitle}
             name="Title"
+            placeholder='write blog title here'
             onChange={({ target }) => {
-              setBlogTitle(target.value);
+              setBlogTitle(target.value)
             }}
             required
           />
@@ -40,8 +41,9 @@ const CreateBlogForm = ({ createBlog }) => {
             type="text"
             value={blogAuthor}
             name="Author"
+            placeholder='write blog author here'
             onChange={({ target }) => {
-              setBlogAuthor(target.value);
+              setBlogAuthor(target.value)
             }}
           />
         </div>
@@ -51,8 +53,9 @@ const CreateBlogForm = ({ createBlog }) => {
             type="text"
             value={blogUrl}
             name="Url"
+            placeholder='write blog url here'
             onChange={({ target }) => {
-              setBlogUrl(target.value);
+              setBlogUrl(target.value)
             }}
             required
           />
@@ -60,7 +63,7 @@ const CreateBlogForm = ({ createBlog }) => {
         <button type="submit">Submit</button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default CreateBlogForm;
+export default CreateBlogForm
