@@ -19,12 +19,12 @@ const Blog = (props) => {
 
   return (
     <Col xs={12} md={6} xl={4} className="mb-3">
-      <Card style={{ width: '18rem' }} key={id}>
+      <Card style={{ width: '18rem' }} key={id}>  
         <Card.Body>
-          <Card.Title>
+          <Card.Title className='blog-title'> 
             {title} by {author}
           </Card.Title>
-          <Button variant="success" onClick={toggleVisibility}>
+          <Button variant="success" className="show-button" onClick={toggleVisibility}>
             {showButtonTitle}
           </Button>
         </Card.Body>
@@ -33,10 +33,10 @@ const Blog = (props) => {
           style={showWhenVisible}
         >
           <ListGroup.Item>Url : {url}</ListGroup.Item>
-          <ListGroup.Item>Likes : {likes} </ListGroup.Item>
+          <ListGroup.Item className='blog-likes'>Likes : {likes} </ListGroup.Item>
           <ListGroup.Item>User : {user.name}</ListGroup.Item>
           <ListGroup.Item>
-            <Button
+            <Button className='like-button'
               variant="success"
               onClick={async () => {
                 await handleLike()
@@ -48,6 +48,7 @@ const Blog = (props) => {
               style={showButtonDelete}
               variant="danger"
               onClick={handleDelete}
+              className='delete-button'
             >
               Delete
             </Button>

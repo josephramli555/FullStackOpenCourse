@@ -12,7 +12,7 @@
 .error{
   color : black;
   font-family: sans-serif;
-  background-color: bisque;
+  background-color: red;
   font-size: 30px;
   border:5px solid red;
   padding: 15px;

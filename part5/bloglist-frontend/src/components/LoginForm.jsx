@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 const LoginForm = ({handleLogin,handlePasswordChange,handleUsernameChange,username,password}) => {
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} id='login-form'>
       <div>
           username
         <input
@@ -10,6 +10,7 @@ const LoginForm = ({handleLogin,handlePasswordChange,handleUsernameChange,userna
           value={username}
           name="Username"
           onChange={handleUsernameChange}
+          id='username'
         />
       </div>
       <div>
@@ -19,9 +20,10 @@ const LoginForm = ({handleLogin,handlePasswordChange,handleUsernameChange,userna
           value={password}
           name="Password"
           onChange={handlePasswordChange}
+          id='password'
         />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit" id='login-button'>Login</button>
     </form>
   )
 }

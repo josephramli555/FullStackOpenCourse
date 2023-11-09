@@ -50,7 +50,7 @@ const App = () => {
       setIsError(true)
       setTimeout(() => {
         setNotifMessage(null)
-      }, 3000)
+      }, 5000)
     }
   }
 

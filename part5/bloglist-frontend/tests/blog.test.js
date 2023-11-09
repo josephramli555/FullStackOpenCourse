@@ -5,7 +5,7 @@ import Blog from '../src/components/Blog'
 import userEvent from '@testing-library/user-event'
 
 
-describe("Testing component <Blog />", () => {
+describe('Testing component <Blog />', () => {
 
   let blogTest = {
     url: 'www.google.com',
@@ -31,15 +31,15 @@ describe("Testing component <Blog />", () => {
 
 
   test('Blog display author and title, but not like and url by default', () => {
-     screen.getByText('Denim by Luthor', { exact: false })
+    screen.getByText('Denim by Luthor', { exact: false })
     const div = container.querySelector('.blog-details')
     expect(div).toHaveStyle('display: none')
 
   })
 
-  test("Blog display url and likes after button show details clicked", async () => {
+  test('Blog display url and likes after button show details clicked', async () => {
     const user = userEvent.setup()
-    const button = screen.getByText("View")
+    const button = screen.getByText('View')
     await user.click(button)
     const div = container.querySelector('.blog-details')
     expect(div).not.toHaveStyle('display: none')
@@ -50,7 +50,7 @@ describe("Testing component <Blog />", () => {
 
   test('like button clicked twice,event handler called twice', async () => {
     const user = userEvent.setup()
-    const button = screen.getByText("Like")
+    const button = screen.getByText('Like')
     await user.click(button)
     await user.click(button)
     expect(mockHandlerLike.mock.calls).toHaveLength(2)
