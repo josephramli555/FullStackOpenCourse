@@ -1,15 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { voteAnecdote } from "../reducers/anecdoteReducer";
-
+import { setNotifText } from "../reducers/notificationReducer";
 const AnecdoteList = () => {
-  const anecdotes = useSelector(({ anecdotes, filter }) => {
-    anecdotes = anecdotes.sort((a, b) => {
+  const sortedAnecdotes = useSelector(({ anecdotes, filter }) => {
+    let currAnecdotes = [...anecdotes];
+    currAnecdotes = currAnecdotes.sort((a, b) => {
       return b.votes - a.votes;
     });
     if (filter === "") {
-      return anecdotes;
+      return currAnecdotes;
     } else {
-      return anecdotes.filter((anecdote) => {
+      return currAnecdotes.filter((anecdote) => {
         return anecdote.content.toLowerCase().includes(filter.toLowerCase());
       });
     }
@@ -18,11 +19,16 @@ const AnecdoteList = () => {
 
   const vote = (id) => {
     dispatch(voteAnecdote(id));
+    let content = sortedAnecdotes.find((e) => e.id == id).content;
+    dispatch(setNotifText(`You have voted ${content.slice(0, 15)}...`));
+    setTimeout(() => {
+      dispatch(setNotifText(""));
+    }, 5000);
   };
 
   return (
     <>
-      {anecdotes.map((anecdote) => (
+      {sortedAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
