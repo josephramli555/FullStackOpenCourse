@@ -1,0 +1,94 @@
+{
+  "anecdotes": [
+    {
+      "content": "If it hurts, do it more often",
+      "id": "47145",
+      "votes": 12
+    },
+    {
+      "content": "Adding manpower to a late software project makes it later!",
+      "id": "21149",
+      "votes": 7
+    },
+    {
+      "content": "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+      "id": "69581",
+      "votes": 6
+    },
+    {
+      "content": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+      "id": "36975",
+      "votes": 0
+    },
+    {
+      "content": "Premature optimization is the root of all evil.",
+      "id": "25170",
+      "votes": 0
+    },
+    {
+      "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+      "id": "98312",
+      "votes": 0
+    },
+    {
+      "content": "new 12.14",
+      "votes": 0,
+      "id": "Bb472kN"
+    },
+    {
+      "content": "new 16.28",
+      "votes": 0,
+      "id": "W_QrlOj"
+    },
+    {
+      "content": "new 16.29",
+      "votes": 0,
+      "id": "8JesVhr"
+    },
+    {
+      "content": "new 16.31",
+      "votes": 0,
+      "id": "Tau2YwH"
+    },
+    {
+      "content": "16.32",
+      "votes": 0,
+      "id": "AJxrqeB"
+    },
+    {
+      "content": "16.33",
+      "votes": 0,
+      "id": "jXWbFXI"
+    },
+    {
+      "content": "16.378",
+      "votes": 0,
+      "id": "nI_i-lL"
+    },
+    {
+      "content": "atlanta 32",
+      "votes": 0,
+      "id": "cSFas09"
+    },
+    {
+      "content": "ededededed",
+      "votes": 0,
+      "id": "b-U2rM6"
+    },
+    {
+      "content": "erererer",
+      "votes": 0,
+      "id": "T8RIp9y"
+    },
+    {
+      "content": "sdsdsdsd",
+      "votes": 0,
+      "id": "glk57uT"
+    },
+    {
+      "content": "ewrererqrwrwq",
+      "votes": 0,
+      "id": "elnuAWW"
+    }
+  ]
+}
