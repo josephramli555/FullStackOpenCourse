@@ -9,18 +9,30 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LOGGED_USER_KEY from "./utils/utils";
 import Notification from "./components/Notification";
-import { useNotifDispatch } from "./context/AppContext";
+import { useNotifDispatch,useUserDispatch,useUserValue } from "./context/AppContext";
+import { setUser,logoutUser } from "./reducers/user";
 import { createAlertNotif, createSuccessNotif } from "./reducers/notification";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const notifDispatch = useNotifDispatch();
+  const userDispatch = useUserDispatch()
   const queryClient = useQueryClient();
+  const user = useUserValue()
   let blogs;
+  useEffect(()=>{
+    const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
+    console.log("inside useeffect")
+    console.log(loggedUserJSON)
+    if (loggedUserJSON) {
+      const parsedUser = JSON.parse(loggedUserJSON);
+      userDispatch(setUser(parsedUser));
+      blogService.setToken(parsedUser.token);
+    }
+  },[])
   const newBlogMutation = useMutation({
     mutationFn: blogService.create,
     onSuccess: (newBlog) => {
@@ -29,26 +41,16 @@ const App = () => {
     },
   });
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const user = await loginService.login({
+      const userLogin = await loginService.login({
         username,
         password,
       });
-      const fetchBlog = await blogService.getAll();
-      // blogsDispatch(setBlogs(fetchBlog));
-      window.localStorage.setItem(LOGGED_USER_KEY, JSON.stringify(user));
-      setUser(user);
+      window.localStorage.setItem(LOGGED_USER_KEY, JSON.stringify(userLogin));
+      userDispatch(setUser(userLogin));
+      blogService.setToken(userLogin.token);
       setUsername("");
       setPassword("");
     } catch (exception) {
@@ -85,7 +87,7 @@ const App = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     window.localStorage.removeItem(LOGGED_USER_KEY);
-    setUser(null);
+    userDispatch(logoutUser())
   };
 
   const HeaderLogin = () => {
@@ -98,6 +100,7 @@ const App = () => {
       </div>
     );
   };
+
 
   const result = useQuery({
     queryKey: ["blogs"],

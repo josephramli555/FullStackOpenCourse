@@ -1,5 +1,6 @@
 import {createContext,useContext,useReducer} from 'react'
 import notificationReducer from '../reducers/notification'
+import userReducer from '../reducers/user'
 
 
 const AppContext = createContext()
@@ -9,10 +10,17 @@ export const AppContextProvider = (props)=>{
         isError : false,
         message : null
     })
+    const [user,userDispatch] = useReducer(userReducer,{
+        token : null,
+        username : null,
+        name : null
+    })
 
     const contextValue = [
         notification,
         notifDispatch,
+        user,
+        userDispatch
     ]
     return (
         <AppContext.Provider value={contextValue}>
@@ -31,6 +39,15 @@ export const useNotifDispatch = ()=>{
     return notifAndDispatch[1]
 }
 
+export const useUserValue = ()=>{
+    const userAndDispatch = useContext(AppContext)
+    return userAndDispatch[2]
+}
+
+export const useUserDispatch = ()=>{
+    const userAndDispatch = useContext(AppContext)
+    return userAndDispatch[3]
+}
 
 
 export default AppContext

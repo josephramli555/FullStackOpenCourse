@@ -35,6 +35,7 @@ const Blog = (props) => {
           <ListGroup.Item>Url : {url}</ListGroup.Item>
           <ListGroup.Item className='blog-likes'>Likes : {likes} </ListGroup.Item>
           <ListGroup.Item>User : {user.name}</ListGroup.Item>
+          <ListGroup.Item>Username : {user.username}</ListGroup.Item>
           <ListGroup.Item>
             <Button className='like-button'
               variant="success"

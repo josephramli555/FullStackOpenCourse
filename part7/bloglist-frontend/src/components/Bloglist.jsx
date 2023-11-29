@@ -1,14 +1,12 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Blog from "./Blog";
-import LOGGED_USER_KEY from "../utils/utils";
 import BlogService from "../services/blogs";
-import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserValue } from "../context/AppContext";
 
 const BlogList = ({ blogs }) => {
-  const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
-  const user = JSON.parse(loggedUserJSON);
+  const user = useUserValue()
 
   const queryClient = useQueryClient();
 
