@@ -2,7 +2,7 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const {userExtractor} = require('../utils/middleware')
+const { userExtractor } = require('../utils/middleware')
 
 blogRouter.get('/', async (request, response, next) => {
     try {
@@ -13,7 +13,7 @@ blogRouter.get('/', async (request, response, next) => {
     }
 })
 
-blogRouter.post('/', userExtractor,async (request, response, next) => {
+blogRouter.post('/', userExtractor, async (request, response, next) => {
     try {
         const body = request.body
         const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -50,13 +50,13 @@ blogRouter.delete("/:id", async (request, response, next) => {
             return response.status(400).json({ error: "deleted id missing" })
         }
         let blog = await Blog.findById(request.params.id)
-        if(!blog){
-            return response.status(404).json({error : "blog to delete not exist"})
+        if (!blog) {
+            return response.status(404).json({ error: "blog to delete not exist" })
         }
         if (blog.user.toString() == decodedToken.id) {
             await Blog.findByIdAndRemove(request.params.id)
-        }else{
-            return response.status(401).json({error : 'you cant delete another user blog'})
+        } else {
+            return response.status(401).json({ error: 'you cant delete another user blog' })
         }
         response.status(204).end()
     } catch (exception) {
@@ -65,13 +65,13 @@ blogRouter.delete("/:id", async (request, response, next) => {
 
 })
 
-blogRouter.put('/:id', async (request, response,next) => {
+blogRouter.put('/:id', async (request, response, next) => {
     try {
-        const { likes,user,author,title,url } = request.body
+        const { likes, user, author, title, url } = request.body
         const blog = {
-            likes,user ,author,title,url
+            likes, user, author, title, url
         }
-        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1, id: 1 })
         response.json(updatedBlog)
     } catch (exception) {
         next(exception)

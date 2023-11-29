@@ -9,9 +9,10 @@ export const AppContextProvider = (props)=>{
         isError : false,
         message : null
     })
+
     const contextValue = [
         notification,
-        notifDispatch
+        notifDispatch,
     ]
     return (
         <AppContext.Provider value={contextValue}>
@@ -25,10 +26,11 @@ export const useNotifValue = ()=>{
     return notifAndDispatch[0]
 }
 
-
 export const useNotifDispatch = ()=>{
     const notifAndDispatch = useContext(AppContext)
     return notifAndDispatch[1]
 }
+
+
 
 export default AppContext

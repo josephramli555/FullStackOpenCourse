@@ -1,28 +1,45 @@
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Blog from './Blog'
-import LOGGED_USER_KEY from '../utils/utils'
-import BlogService from '../services/blogs'
-import { useState, useEffect } from 'react'
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Blog from "./Blog";
+import LOGGED_USER_KEY from "../utils/utils";
+import BlogService from "../services/blogs";
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const BlogList = ({ blogs }) => {
-  const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY)
-  const user = JSON.parse(loggedUserJSON)
-  let [bloglist, setBlogList] = useState(blogs)
+  const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
+  const user = JSON.parse(loggedUserJSON);
+
+  const queryClient = useQueryClient();
+
+  const updateBlogMutation = useMutation({
+    mutationFn: BlogService.update,
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"]);
+      let updatedBlogList = blogs.map((e) => {
+        return e.id !== updatedBlog.id ? e : updatedBlog;
+      });
+      queryClient.setQueryData(["blogs"], updatedBlogList);
+    },
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: BlogService.deleteBlog,
+    onSuccess: (data,deleteBlogId) => {
+      const blogs = queryClient.getQueryData(["blogs"])
+      let newBlogList = blogs.filter((blog)=>{
+        return blog.id !== deleteBlogId
+      })
+      queryClient.setQueryData(["blogs"], newBlogList);
+    },
+  });
+
   const deleteBlog = async (blog) => {
-    let isDelete = confirm(`Delete ${blog.title} by ${blog.author}?`)
+    let isDelete = confirm(`Delete ${blog.title} by ${blog.author}?`);
     if (isDelete) {
-      try {
-        await BlogService.deleteBlog(blog.id)
-        let newBlogList = bloglist.filter(
-          (currBlog) => blog.id !== currBlog.id
-        )
-        setBlogList(newBlogList)
-      } catch (e) {
-        console.log(e)
-      }
+      deleteBlogMutation.mutate(blog.id);
     }
-  }
+  };
 
   const updateLike = async (blog) => {
     let updatedBlog = {
@@ -32,39 +49,31 @@ const BlogList = ({ blogs }) => {
       id: blog.id,
       likes: blog.likes + 1,
       user: user.id,
-    }
-    return await BlogService.update(updatedBlog)
-  }
-
-  useEffect(() => {
-    setBlogList(blogs)
-  }, [blogs])
+    };
+    updateBlogMutation.mutate(updatedBlog);
+  };
 
   return (
     <>
       <Container>
         <Row>
-          {bloglist.map((blog,index) => (
+          {blogs.map((blog, index) => (
             <Blog
               key={blog.id}
               data={blog}
               canBeDeleted={blog.user.username === user.username}
               handleDelete={() => {
-                deleteBlog(blog)
+                deleteBlog(blog);
               }}
               handleLike={async () => {
-                let result = await updateLike(blog)
-                let newBlogList = [...bloglist]
-                newBlogList[index].likes = result.likes
-                setBlogList(newBlogList)
-                return result
+                await updateLike(blog);
               }}
             ></Blog>
           ))}
         </Row>
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default BlogList
+export default BlogList;

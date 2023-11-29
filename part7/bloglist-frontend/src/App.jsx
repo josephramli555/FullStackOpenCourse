@@ -10,28 +10,34 @@ import loginService from "./services/login";
 import LOGGED_USER_KEY from "./utils/utils";
 import Notification from "./components/Notification";
 import { useNotifDispatch } from "./context/AppContext";
-import { createAlertNotif,createSuccessNotif } from "./reducers/notification";
+import { createAlertNotif, createSuccessNotif } from "./reducers/notification";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const notifDispatch = useNotifDispatch()
+  const notifDispatch = useNotifDispatch();
+  const queryClient = useQueryClient();
+  let blogs;
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"]);
+      queryClient.setQueryData(["blogs"], blogs.concat(newBlog));
+    },
+  });
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       blogService.setToken(user.token);
-      blogService.getAll().then((fetchBlog) => {
-        // Sort Blog By Likes
-        fetchBlog.sort((a, b) => {
-          return b.likes - a.likes;
-        });
-        setBlogs(fetchBlog);
-      });
     }
   }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -40,33 +46,39 @@ const App = () => {
         password,
       });
       const fetchBlog = await blogService.getAll();
-      setBlogs(fetchBlog);
+      // blogsDispatch(setBlogs(fetchBlog));
       window.localStorage.setItem(LOGGED_USER_KEY, JSON.stringify(user));
       setUser(user);
       setUsername("");
       setPassword("");
     } catch (exception) {
-      notifDispatch(createAlertNotif("Wrong credentials has been entered"))
-      setTimeout(()=>{
-        notifDispatch(createSuccessNotif(null))
-      },5000)
+      notifDispatch(createAlertNotif("Wrong credentials has been entered"));
+      setTimeout(() => {
+        notifDispatch(createSuccessNotif(null));
+      }, 5000);
     }
   };
 
   const createBlog = async (blog) => {
     try {
-      let newBlog = await blogService.create(blog);
-      let fetchBlog = await blogService.getAll();
-      setBlogs(fetchBlog);
-      notifDispatch(createSuccessNotif(`${newBlog.title} by ${newBlog.author} has been created`))
-      setTimeout(()=>{
-        notifDispatch(createSuccessNotif(null))
-      },3000)
+      newBlogMutation.mutate(blog, {
+        onSuccess: (data) => {
+          notifDispatch(
+            createSuccessNotif(
+              `${data.title} by ${data.author} has been created`
+            )
+          );
+          setTimeout(() => {
+            notifDispatch(createSuccessNotif(null));
+          }, 3000);
+        },
+      });
     } catch (exception) {
-      notifDispatch(createAlertNotif('Submission Error'))
-      setTimeout(()=>{
-        notifDispatch(createSuccessNotif(null))
-      },3000)
+      console.log(exception);
+      notifDispatch(createAlertNotif("Submission Error"));
+      setTimeout(() => {
+        notifDispatch(createSuccessNotif(null));
+      }, 3000);
     }
   };
 
@@ -87,12 +99,23 @@ const App = () => {
     );
   };
 
+  const result = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+  });
 
+  if (result.isLoading) {
+    return <div>Loading blog data</div>;
+  }
+  blogs = [...result.data];
+  blogs.sort((a, b) => {
+    return b.likes - a.likes;
+  });
 
   return (
     <div>
       <h2>Welcome to Website</h2>
-      <Notification/>
+      <Notification />
       {user ? (
         <div>
           <HeaderLogin />
