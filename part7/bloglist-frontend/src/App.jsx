@@ -9,30 +9,40 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LOGGED_USER_KEY from "./utils/utils";
 import Notification from "./components/Notification";
-import { useNotifDispatch,useUserDispatch,useUserValue } from "./context/AppContext";
-import { setUser,logoutUser } from "./reducers/user";
+import Users from "./components/Users";
+import {
+  useNotifDispatch,
+  useUserDispatch,
+  useUserValue,
+} from "./context/AppContext";
+import { setUser, logoutUser } from "./reducers/user";
 import { createAlertNotif, createSuccessNotif } from "./reducers/notification";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import UserDetail from "./components/UserDetail";
+import Blog from "./components/Blog";
+import { Container } from "react-bootstrap";
 const App = () => {
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const notifDispatch = useNotifDispatch();
-  const userDispatch = useUserDispatch()
+  const userDispatch = useUserDispatch();
   const queryClient = useQueryClient();
-  const user = useUserValue()
+  const user = useUserValue();
   let blogs;
-  useEffect(()=>{
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(LOGGED_USER_KEY);
-    console.log("inside useeffect")
-    console.log(loggedUserJSON)
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON);
       userDispatch(setUser(parsedUser));
       blogService.setToken(parsedUser.token);
     }
-  },[])
+  }, []);
   const newBlogMutation = useMutation({
     mutationFn: blogService.create,
     onSuccess: (newBlog) => {
@@ -87,10 +97,10 @@ const App = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     window.localStorage.removeItem(LOGGED_USER_KEY);
-    userDispatch(logoutUser())
+    userDispatch(logoutUser());
   };
 
-  const HeaderLogin = () => {
+  const HeaderLogin = ({ handleLogout }) => {
     return (
       <div>
         <h2>Blogs</h2>
@@ -101,6 +111,33 @@ const App = () => {
     );
   };
 
+  const MainPage = ({ user, blogs, createBlog, handleLogin, handleLogout }) => {
+    return (
+      <>
+        {user ? (
+          <div>
+            <HeaderLogin handleLogout={handleLogout} />
+            <Togglable buttonLabel="Create Blog">
+              <CreateBlogForm createBlog={createBlog}></CreateBlogForm>
+            </Togglable>
+            <BlogList blogs={blogs} />
+          </div>
+        ) : (
+          <LoginForm
+            handleLogin={handleLogin}
+            password={password}
+            username={username}
+            handlePasswordChange={({ target }) => {
+              setPassword(target.value);
+            }}
+            handleUsernameChange={({ target }) => {
+              setUsername(target.value);
+            }}
+          />
+        )}
+      </>
+    );
+  };
 
   const result = useQuery({
     queryKey: ["blogs"],
@@ -116,31 +153,31 @@ const App = () => {
   });
 
   return (
-    <div>
-      <h2>Welcome to Website</h2>
-      <Notification />
-      {user ? (
-        <div>
-          <HeaderLogin />
-          <Togglable buttonLabel="Create Blog">
-            <CreateBlogForm createBlog={createBlog}></CreateBlogForm>
-          </Togglable>
-          <BlogList blogs={blogs} />
-        </div>
-      ) : (
-        <LoginForm
-          handleLogin={handleLogin}
-          password={password}
-          username={username}
-          handlePasswordChange={({ target }) => {
-            setPassword(target.value);
-          }}
-          handleUsernameChange={({ target }) => {
-            setUsername(target.value);
-          }}
-        />
-      )}
-    </div>
+    <Router>
+      <Container>
+        <Link to="/users">USERS</Link>
+        <Link to="/">Home</Link>
+        <h2>Welcome to Website</h2>
+        <Notification />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainPage
+                user={user}
+                blogs={blogs}
+                handleLogin={handleLogin}
+                handleLogout={handleLogout}
+                createBlog={createBlog}
+              />
+            }
+          />
+          <Route path='/blogs/:id' element={<Blog/>}></Route>
+          <Route path="/users/:id" element={<UserDetail />}></Route>
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </Container>
+    </Router>
   );
 };
 
