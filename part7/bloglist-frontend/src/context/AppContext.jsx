@@ -10,11 +10,7 @@ export const AppContextProvider = (props)=>{
         isError : false,
         message : null
     })
-    const [user,userDispatch] = useReducer(userReducer,{
-        token : null,
-        username : null,
-        name : null
-    })
+    const [user,userDispatch] = useReducer(userReducer,null)
 
     const contextValue = [
         notification,

@@ -18,15 +18,11 @@ import {
 import { setUser, logoutUser } from "./reducers/user";
 import { createAlertNotif, createSuccessNotif } from "./reducers/notification";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import UserDetail from "./components/UserDetail";
 import Blog from "./components/Blog";
 import { Container } from "react-bootstrap";
+import NavigationBar from "./components/NavigationBar";
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -111,34 +107,6 @@ const App = () => {
     );
   };
 
-  const MainPage = ({ user, blogs, createBlog, handleLogin, handleLogout }) => {
-    return (
-      <>
-        {user ? (
-          <div>
-            <HeaderLogin handleLogout={handleLogout} />
-            <Togglable buttonLabel="Create Blog">
-              <CreateBlogForm createBlog={createBlog}></CreateBlogForm>
-            </Togglable>
-            <BlogList blogs={blogs} />
-          </div>
-        ) : (
-          <LoginForm
-            handleLogin={handleLogin}
-            password={password}
-            username={username}
-            handlePasswordChange={({ target }) => {
-              setPassword(target.value);
-            }}
-            handleUsernameChange={({ target }) => {
-              setUsername(target.value);
-            }}
-          />
-        )}
-      </>
-    );
-  };
-
   const result = useQuery({
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
@@ -152,27 +120,41 @@ const App = () => {
     return b.likes - a.likes;
   });
 
+  if (!user) {
+    return (
+      <LoginForm
+        handleLogin={handleLogin}
+        password={password}
+        username={username}
+        handlePasswordChange={({ target }) => {
+          setPassword(target.value);
+        }}
+        handleUsernameChange={({ target }) => {
+          setUsername(target.value);
+        }}
+      />
+    );
+  }
+
   return (
     <Router>
       <Container>
-        <Link to="/users">USERS</Link>
-        <Link to="/">Home</Link>
-        <h2>Welcome to Website</h2>
-        <Notification />
+      <NavigationBar handleLogout={handleLogout} />
         <Routes>
           <Route
             path="/"
             element={
-              <MainPage
-                user={user}
-                blogs={blogs}
-                handleLogin={handleLogin}
-                handleLogout={handleLogout}
-                createBlog={createBlog}
-              />
+              <div>
+                <Notification />
+                <HeaderLogin handleLogout={handleLogout} />
+                <Togglable buttonLabel="Create Blog">
+                  <CreateBlogForm createBlog={createBlog}></CreateBlogForm>
+                </Togglable>
+                <BlogList blogs={blogs} />
+              </div>
             }
           />
-          <Route path='/blogs/:id' element={<Blog/>}></Route>
+          <Route path="/blogs/:id" element={<Blog />}></Route>
           <Route path="/users/:id" element={<UserDetail />}></Route>
           <Route path="/users" element={<Users />} />
         </Routes>
