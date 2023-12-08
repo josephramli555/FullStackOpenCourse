@@ -1,18 +1,17 @@
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useQueryClient ,useMutation} from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import blogService from "../services/blogs";
 import { useNotifDispatch, useUserValue } from "../context/AppContext";
 import { createSuccessNotif } from "../reducers/notification";
+import Comments from "./Comments";
 const Blog = () => {
-  const user = useUserValue()
+  const user = useUserValue();
   const queryClient = useQueryClient();
-  const navigate = useNavigate()
-  const dispatchNotif = useNotifDispatch()
+  const navigate = useNavigate();
+  const dispatchNotif = useNotifDispatch();
   let blogList = queryClient.getQueryData(["blogs"]);
-
 
   const updateBlogMutation = useMutation({
     mutationFn: blogService.update,
@@ -40,11 +39,13 @@ const Blog = () => {
     let isDelete = confirm(`Delete ${blog.title} by ${blog.author}?`);
     if (isDelete) {
       deleteBlogMutation.mutate(blog.id);
-      dispatchNotif(createSuccessNotif(`${blog.title} by ${blog.author} has been deleted`))
+      dispatchNotif(
+        createSuccessNotif(`${blog.title} by ${blog.author} has been deleted`)
+      );
       setTimeout(() => {
         dispatchNotif(createSuccessNotif(null));
       }, 5000);
-      navigate('/') 
+      navigate("/");
     }
   };
 
@@ -61,45 +62,52 @@ const Blog = () => {
   };
   let blogId = useParams().id;
   let blog = blogList.find((e) => e.id === blogId);
-  let { url, likes, author, title} = blog;
+  let { url, likes, author, title, comments } = blog;
 
-  const showButtonDelete = { display: user.username ===blog.user.username ? "" : "none" };
-
+  const showButtonDelete = {
+    display: user.username === blog.user.username ? "" : "none",
+  };
 
   return (
-    <Card className="text-center" bg="light" border="warning">
-      <Card.Header className="display-6 font-weight-bold bg-dark text-light  text-uppercase py-3">{title}</Card.Header>
-      <Card.Body className="py-4">
-        <Card.Title className="blockquote-footer">
-          Written by <cite title={author}>{author}</cite>
-        </Card.Title>
-        <Card.Text>
-          <a href={url}>Source : {url}</a>
-        </Card.Text>
-        <Card.Text>Likes : {likes}</Card.Text>
-        <Button
-          variant="success"
-          className="mx-2"
-          onClick={async () => {
-            await handleLike(blog);
-          }}
-        >
-          Like
-        </Button>
-        <Button
-          variant="danger"
-          style={showButtonDelete}
-          onClick={async () => {
-            await handleDelete(blog);
-          }}
-        >
-          Delete
-        </Button>
-      </Card.Body>
-      <Card.Footer className="text-muted">Added by {user.name}</Card.Footer>
-    </Card>
+    <>
+      <Card className="text-center my-3" bg="light" border="warning" >
+        <Card.Header className="display-6 font-weight-bold bg-dark text-light  text-uppercase py-3">
+          {title}
+        </Card.Header>
+        <Card.Body className="py-4">
+          <Card.Title className="blockquote-footer">
+            Written by <cite title={author}>{author}</cite>
+          </Card.Title>
+          <Card.Text>
+            <a href={url}>Source : {url}</a>
+          </Card.Text>
+          <Card.Text>Likes : {likes}</Card.Text>
+          <Button
+            variant="success"
+            className="mx-2"
+            onClick={async () => {
+              await handleLike(blog);
+            }}
+          >
+            Like
+          </Button>
+          <Button
+            variant="danger"
+            style={showButtonDelete}
+            onClick={async () => {
+              await handleDelete(blog);
+            }}
+          >
+            Delete
+          </Button>
+        </Card.Body>
+        <Card.Footer className="text-muted">Added by {user.name}</Card.Footer>
+      </Card>
+
+    
+      <Comments blog={blog}/>
+    </>
   );
- 
 };
 
 export default Blog;

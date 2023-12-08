@@ -140,12 +140,12 @@ const App = () => {
     <Router>
       <Container>
       <NavigationBar handleLogout={handleLogout} />
+      <Notification />
         <Routes>
           <Route
             path="/"
             element={
               <div>
-                <Notification />
                 <HeaderLogin handleLogout={handleLogout} />
                 <Togglable buttonLabel="Create Blog">
                   <CreateBlogForm createBlog={createBlog}></CreateBlogForm>

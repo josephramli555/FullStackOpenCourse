@@ -34,4 +34,18 @@ const deleteBlog = (blogID) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, setToken, create, update, deleteBlog }
+const postComment =  ({blogID,content})=>{
+  const URL = `${baseUrl}/${blogID}/comments`
+  const config = {
+    headers : {Authorization : token}
+  }
+  const data = {
+    comments : content
+  }
+ 
+    let result =  axios.post(URL,data,config)
+    return result.then(response=>response.data)
+  
+}
+
+export default { getAll, setToken, create, update, deleteBlog,postComment}

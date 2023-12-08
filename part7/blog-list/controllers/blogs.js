@@ -31,10 +31,32 @@ blogRouter.post('/', userExtractor, async (request, response, next) => {
             blog.likes = 0
         }
 
-        let savedBlog = await blog.save().then(t=>t.populate('user', { username: 1, name: 1, id: 1 })).then(t=>t)
+        let savedBlog = await blog.save().then(t => t.populate('user', { username: 1, name: 1, id: 1 })).then(t => t)
         user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
         response.status(201).json(savedBlog)
+    } catch (exception) {
+        next(exception)
+    }
+})
+
+blogRouter.post("/:id/comments", async (request, response, next) => {
+    try {
+        const decodedToken = jwt.verify(request.token, process.env.SECRET)
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'token invalid' })
+        }
+        if (!request.params.id) {
+            return response.status(400).json({ error: "blog id is missing" })
+        }
+        const comments = request.body.comments
+        const blog = await Blog.findById(request.params.id)
+        if (!blog) {
+            return response.status(404).json({ error: "blog to update not exist" })
+        }
+        blog.comments.push(comments)
+        let result = await blog.save()
+        response.status(201).json(result)
     } catch (exception) {
         next(exception)
     }
