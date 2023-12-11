@@ -1,72 +1,70 @@
-import { useState } from 'react'
-
+import { Fragment, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 const CreateBlogForm = ({ createBlog }) => {
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogAuthor, setBlogAuthor] = useState("");
+  const [blogUrl, setBlogUrl] = useState("");
 
   const addBlog = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     let newBlog = {
       title: blogTitle,
       author: blogAuthor,
       url: blogUrl,
-    }
-    await createBlog(newBlog)
-    setBlogTitle('')
-    setBlogUrl('')
-    setBlogAuthor('')
-  }
+    };
+    await createBlog(newBlog);
+    setBlogTitle("");
+    setBlogUrl("");
+    setBlogAuthor("");
+  };
 
   return (
     <>
-      <h2>Create Form</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
+      <Form onSubmit={addBlog} className="my-3">
+        <Form.Group className="mb-2" controlId="title">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
             type="text"
+            placeholder="Enter Blog Title"
             value={blogTitle}
-            name="Title"
-            placeholder='write blog title here'
+            className="input-blog-title"
             onChange={({ target }) => {
-              setBlogTitle(target.value)
+              setBlogTitle(target.value);
             }}
-            className='input-blog-title'
             required
-          />
-        </div>
-        <div>
-          author:
-          <input
+          ></Form.Control>
+        </Form.Group> 
+        <Form.Group className="mb-2" controlId="author">
+          <Form.Label>Author</Form.Label>
+          <Form.Control
             type="text"
+            placeholder="Enter Blog Author"
             value={blogAuthor}
-            name="Author"
-            placeholder='write blog author here'
             onChange={({ target }) => {
-              setBlogAuthor(target.value)
+              setBlogAuthor(target.value);
             }}
-            className='input-blog-author'
-          />
-        </div>
-        <div>
-          url:
-          <input
+            className="input-blog-author"
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="url">
+          <Form.Label>Blog URL</Form.Label>
+          <Form.Control
             type="text"
+            placeholder="Enter Blog Url"
             value={blogUrl}
-            name="Url"
-            placeholder='write blog url here'
             onChange={({ target }) => {
-              setBlogUrl(target.value)
+              setBlogUrl(target.value);
             }}
+            className="input-blog-url"
             required
-            className='input-blog-url'
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+          ></Form.Control>
+        </Form.Group>
+        <Button variant="success" type="submit" className="my-2">
+          submit
+        </Button>
+      </Form>
     </>
-  )
-}
+  );
+};
 
-export default CreateBlogForm
+export default CreateBlogForm;

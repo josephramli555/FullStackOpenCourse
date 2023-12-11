@@ -99,9 +99,10 @@ const App = () => {
   const HeaderLogin = ({ handleLogout }) => {
     return (
       <div>
-        <h2>Blogs</h2>
-        <p>Welcome {user.name}</p>
-        <button onClick={handleLogout}>Logout</button>
+        <h1>Welcome to Main Page 
+      
+        </h1>
+        <h2>{user.name}</h2>
         <br></br>
       </div>
     );
